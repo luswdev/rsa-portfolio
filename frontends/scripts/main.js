@@ -17,10 +17,11 @@ const app = {
             lastGain: 0,
             lastChange: 0,
             twdusd: 0,
-            usVisual: true,
-            twVisual: true,
+            usVisual: false,
+            twVisual: false,
             costVisual: false,
             editValid: true,
+            refreshTime: '-',
         }
     },
     methods: {
@@ -657,19 +658,7 @@ const app = {
             }
 
             axios.post('/config', config).then(async () => {
-                for (let element of this.assert) {
-                    element.last = await this.getStock(element.ticker)
-
-                    if (isNaN(parseInt(element.ticker))) {
-                        this.totalCost += element.cost * this.twdusd
-                        this.totalGain += element.last * element.quantity * this.twdusd
-                        this.lastChange += await this.getLastChange(element.ticker) * element.quantity * this.twdusd
-                    } else {
-                        this.totalCost += element.cost
-                        this.totalGain += element.last * element.quantity
-                        this.lastChange += await this.getLastChange(element.ticker) * element.quantity
-                    }
-                }
+                await this.refreshData()
 
                 this.growthChart().destroy()
                 this.drawdownChart().destroy()
@@ -681,6 +670,34 @@ const app = {
                 this.drawReturnChart(this.portfolio)
             })
         },
+        refreshData: async function () {
+            this.twdusd = await this.getCurrency('TWD')
+
+            this.totalCost = 0
+            this.totalGain = 0
+            this.lastChange = 0
+            for (let element of this.assert) {
+                element.last = await this.getStock(element.ticker)
+
+                if (isNaN(parseInt(element.ticker))) {
+                    this.totalCost += element.cost * this.twdusd
+                    this.totalGain += element.last * element.quantity * this.twdusd
+                    this.lastChange += await this.getLastChange(element.ticker) * element.quantity * this.twdusd
+                } else {
+                    this.totalCost += element.cost
+                    this.totalGain += element.last * element.quantity
+                    this.lastChange += await this.getLastChange(element.ticker) * element.quantity
+                }
+            }
+
+            this.totalReturn = this.fixNum((this.totalGain - this.totalCost) / this.totalCost * 100)
+            this.totalGainLoss = this.totalGain - this.totalCost
+            this.totalCostLabel = this.fixNum(this.totalCost).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })
+            this.lastGain = this.fixNum(this.totalGain - this.lastChange).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })
+            this.totalGain = this.fixNum(this.totalGain).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })
+
+            this.refreshTime = new Date(Date.now()).toLocaleString()
+        }
     },
     mounted: async function () {
         let res = await axios.get('/config')
@@ -688,33 +705,20 @@ const app = {
         this.portfolio = res.data.portfolio
         this.assert = res.data.assert
 
-        this.twdusd = await this.getCurrency('TWD')
+        await this.refreshData()
+
         this.drawGrowthChart(this.portfolio)
         this.drawDrawdownChart(this.portfolio)
-
-        for (let element of this.assert) {
-            element.last = await this.getStock(element.ticker)
-
-            if (isNaN(parseInt(element.ticker))) {
-                this.totalCost += element.cost * this.twdusd
-                this.totalGain += element.last * element.quantity * this.twdusd
-                this.lastChange += await this.getLastChange(element.ticker) * element.quantity * this.twdusd
-            } else {
-                this.totalCost += element.cost
-                this.totalGain += element.last * element.quantity
-                this.lastChange += await this.getLastChange(element.ticker) * element.quantity
-            }
-        }
         this.drawAllocationChart(this.assert)
         this.drawReturnChart(this.portfolio)
 
-        this.totalReturn = this.fixNum((this.totalGain - this.totalCost) / this.totalCost * 100)
-        this.totalGainLoss = this.totalGain - this.totalCost
-        this.totalCostLabel = this.fixNum(this.totalCost).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })
-        this.lastGain = this.fixNum(this.totalGain - this.lastChange).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })
-        this.totalGain = this.fixNum(this.totalGain).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })
-
         this.toggleCost()
+        this.toggleTW()
+        this.toggleUS()
+
+        setInterval(() => {
+            this.refreshData()
+        }, 5 * 60 * 1000)   // every 5 minutes
     }
 }
 const appVm = Vue.createApp(app).mount('#app')
