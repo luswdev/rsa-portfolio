@@ -69,7 +69,7 @@ const app = {
                 method: 'get',
                 url: `https://fin.lusw.dev/stock/${ticker}`,
             }).then( (response) => {
-                res = response.data.current - response.data.last
+                res = response.data.last
             })
             return res
         },
@@ -338,6 +338,7 @@ const app = {
                             },
                         },
                         y: {
+                            max: 0,
                             title: {
                                 text: 'Drawdown',
                                 display: true,
@@ -576,7 +577,7 @@ const app = {
             return balance
         },
         calcCAGR: function (idx, balance, cost) {
-            return (Math.pow(((balance - cost) / cost + 1), (12 / idx)) - 1) * 100
+            return (Math.pow(((balance - cost) / cost + 1), (12 / (idx + 1))) - 1) * 100
         },
         formatDate: function (date) {
             const options = {
@@ -703,16 +704,17 @@ const app = {
             this.totalGain = 0
             this.lastChange = 0
             for (let element of this.assert) {
-                element.last = await this.getStock(element.ticker)
+                element.current = await this.getStock(element.ticker)
+                element.last = await this.getLastChange(element.ticker)
 
                 if (isNaN(parseInt(element.ticker))) {
                     this.totalCost += element.cost * this.twdusd
-                    this.totalGain += element.last * element.quantity * this.twdusd
-                    this.lastChange += await this.getLastChange(element.ticker) * element.quantity * this.twdusd
+                    this.totalGain += element.current * element.quantity * this.twdusd
+                    this.lastChange += (element.current - element.last) * element.quantity * this.twdusd
                 } else {
                     this.totalCost += element.cost
-                    this.totalGain += element.last * element.quantity
-                    this.lastChange += await this.getLastChange(element.ticker) * element.quantity
+                    this.totalGain += element.current * element.quantity
+                    this.lastChange += (element.current - element.last) * element.quantity
                 }
             }
 

@@ -125,27 +125,27 @@
                                         <tr v-for="record in assert">
                                             <td>{{record.ticker}}</td>
                                             <td>{{record.name}}</td>
-                                            <td v-if="isNaN(parseInt(record.ticker))" class="text-nowrap">
-                                                {{fixNum(record.last).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}}
+                                            <td v-if="isNaN(parseInt(record.ticker))" :class="record.current > record.last ? 'text-success' : record.current < record.last ? 'text-danger' : ''">
+                                                {{fixNum(record.current).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}}
                                             </td>
-                                            <td v-else class="text-nowrap">
-                                                {{fixNum(record.last).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}
+                                            <td v-else :class="record.current > record.last ? 'text-success' : record.current < record.last? 'text-danger' : ''">
+                                                {{fixNum(record.current).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}
                                             </td>
                                             <td>{{fixNum(record.quantity)}}</td>
                                             <td v-if="isNaN(parseInt(record.ticker))" >
                                                 {{record.cost.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}}
                                             </td>
-                                            <td v-else class="text-nowrap">
+                                            <td v-else>
                                                 {{record.cost.toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}
                                             </td>
-                                            <td v-if="isNaN(parseInt(record.ticker))" :class="calcGain(record.quantity * record.last, record.cost).value > 0 ? 'text-success' : 'text-danger'">
-                                                {{fixNum(calcGain(record.quantity * record.last, record.cost).value).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}}
+                                            <td v-if="isNaN(parseInt(record.ticker))" :class="calcGain(record.quantity * record.current, record.cost).value > 0 ? 'text-success' : 'text-danger'">
+                                                {{fixNum(calcGain(record.quantity * record.current, record.cost).value).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}}
                                             </td>
-                                            <td v-else :class="calcGain(record.quantity * record.last, record.cost).value > 0 ? 'text-success' : 'text-danger'">
-                                                {{fixNum(calcGain(record.quantity * record.last, record.cost).value).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}
+                                            <td v-else :class="calcGain(record.quantity * record.current, record.cost).value > 0 ? 'text-success' : 'text-danger'">
+                                                {{fixNum(calcGain(record.quantity * record.current, record.cost).value).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}
                                             </td>
-                                            <td :class="calcGain(record.quantity * record.last, record.cost).value > 0 ? 'text-success' : 'text-danger'">
-                                                {{fixNum(calcGain(record.quantity * record.last, record.cost).percent * 100)}}%
+                                            <td :class="calcGain(record.quantity * record.current, record.cost).value > 0 ? 'text-success' : 'text-danger'">
+                                                {{fixNum(calcGain(record.quantity * record.current, record.cost).percent * 100)}}%
                                             </td>
                                         </tr>
                                         <tr>
@@ -191,7 +191,7 @@
                         <i v-if="lastChange > 0"   class="fa-solid fa-caret-up fs-3 pe-2"></i>
                         <i v-if="lastChange === 0" class="fa-solid fa-minus fs-3 pe-2"></i>
                         <i v-if="lastChange < 0"   class="fa-solid fa-caret-down fs-3 pe-2"></i>
-                        <span class="fs-1">{{Math.abs(fixNum(lastChange))}}</span>
+                        <span class="fs-1">{{Math.abs(fixNum(lastChange)).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}</span>
                         <span class="ps-2">({{fixNum(Math.abs((lastChange / totalCost) * 100))}}%)</span>
                     </p>
                     <div class="row">
