@@ -41,7 +41,7 @@ const app = {
                 method: 'get',
                 url: `https://fin.lusw.dev/currency/${ticker}`,
             })
-            return res.data.ask
+            return res.data.current
         },
         getStock: async function (ticker) {
             if (!isNaN(parseInt(ticker))) {
@@ -52,7 +52,7 @@ const app = {
                 method: 'get',
                 url: `https://fin.lusw.dev/stock/${ticker}`,
             })
-            return res.data.ask
+            return res.data.current
         },
         getLastChange: async function (ticker) {
             if (!isNaN(parseInt(ticker))) {
@@ -64,7 +64,7 @@ const app = {
                 method: 'get',
                 url: `https://fin.lusw.dev/stock/${ticker}`,
             }).then( (response) => {
-                res = response.data.ask - response.data.previousClose
+                res = response.data.current - response.data.last
             })
             return res
         },
