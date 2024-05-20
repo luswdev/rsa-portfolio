@@ -90,7 +90,24 @@ input:focus {
 .refresh-time {
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.8rem;
+}
+
+.refresh-time>i {
     cursor: pointer;
+}
+
+.refresh-time>i.refresh-done {
+    cursor: pointer;
+}
+
+.refresh-time>i.refreshing {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.refresh-time>.spinner-border {
+    width: 0.8rem;
+    height: 0.8rem;
 }
 
 footer {

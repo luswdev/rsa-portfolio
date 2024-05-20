@@ -22,6 +22,7 @@ const app = {
             costVisual: false,
             editValid: true,
             refreshTime: '-',
+            refreshing: false,
             editModal: undefined,
         }
     },
@@ -676,6 +677,7 @@ const app = {
             })
         },
         refreshData: async function () {
+            this.refreshing = true
             this.twdusd = await this.getCurrency('TWD')
 
             this.totalCost = 0
@@ -702,6 +704,7 @@ const app = {
             this.totalGain = this.fixNum(this.totalGain).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })
 
             this.refreshTime = new Date(Date.now()).toLocaleString()
+            this.refreshing = false
         }
     },
     mounted: async function () {
