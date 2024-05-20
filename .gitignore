@@ -8,4 +8,5 @@
 
 **/flask_session/
 
+frontends/scripts/rule.js
 *.json

@@ -311,13 +311,9 @@
                     </h2>
                     <div id="collapse-rule" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
+                            <h5>Version {{ruleUpdate.toLocaleDateString()}}</h5>
                             <ol>
-                                <li><strong>S&P 500 Index</strong>/<strong>Taiwan Weighted Index</strong> fell by 1% in a day, contribute one unit.</li>
-                                <li>If <strong>1.</strong> is not met, contribute 1 unit on the third Wednesday of every month.</li>
-                                <li>If <strong>1.</strong> is met and <strong>S&P 500 Index</strong>/<strong>Taiwan Weighted Index</strong> fell by 5% in a month, contribute one more unit.</li>
-                                <li>One unit is 100 shares for <strong>00631L</strong>, otherwise, $100.</li>
-                                <li>Reinvest dividends and distributions.</li>
-                                <li>Rebalance annually at every May.</li>
+                                <li v-for="rule in rules" v-html="rule"></li>
                             </ol>
                         </div>
                     </div>
@@ -439,6 +435,7 @@
         </div>
     </div>
 
-    <script src="/scripts/main.js?202405201603"></script>
+    <script src="/scripts/rule.js?202405201603"></script>
+    <script src="/scripts/main.js?202405201615"></script>
 </body>
 </html>

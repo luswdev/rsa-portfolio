@@ -9,6 +9,8 @@ const app = {
             assert: [],
             portfolioEdit: [],
             assertEdit: [],
+            rules: rules,
+            ruleUpdate: ruleUpdate,
             totalGain: 0,
             totalCost: 0,
             totalCostLabel: 0,
