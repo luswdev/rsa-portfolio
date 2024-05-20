@@ -373,7 +373,7 @@ const app = {
                         label: 'Weight Outer',
                         data: assert.map( (item) => this.calcAlloc(item.ticker, item.quantity * item.last) ),
                         borderWidth: 0,
-                        backgroundColor: ['rgb(149, 117, 205, 0.4)', 'rgb(128, 203, 196, 0.4)', 'rgb(77, 182, 172, 0.4)', 'rgb(38, 166, 154, 0.4)'],
+                        backgroundColor: assert.map( (item) => this.hexToRgba(item.color, 0.4) ),
                         radius: 0
                     },
                     {
@@ -381,7 +381,7 @@ const app = {
                         data: assert.map( (item) => this.calcAlloc(item.ticker, item.quantity * item.last) ),
                         borderWidth: 2,
                         borderColor: '#212529',
-                        backgroundColor: ['#9575CD', '#80CBC4','#4DB6AC', '#26A69A'],
+                        backgroundColor: assert.map( (item) => item.color ),
                     }
                 ]
             }
@@ -606,6 +606,7 @@ const app = {
                 'name': '',
                 'quantity': 0,
                 'cost': 0,
+                'color': '#000000',
             })
         },
         appendEmptyHistory: function () {
@@ -621,8 +622,20 @@ const app = {
                 },
             })
         },
+        indexUpAssert: function (idx) {
+            [this.assertEdit[idx], this.assertEdit[idx - 1]] = [this.assertEdit[idx - 1], this.assertEdit[idx]]
+        },
+        indexDownAssert:  function (idx) {
+            [this.assertEdit[idx], this.assertEdit[idx + 1]] = [this.assertEdit[idx + 1], this.assertEdit[idx]]
+        },
         deleteAssert: function (idx) {
             this.assertEdit.splice(idx, 1)
+        },
+        indexUpHistory:  function (idx) {
+            [this.portfolioEdit[idx], this.portfolioEdit[idx - 1]] = [this.portfolioEdit[idx - 1], this.portfolioEdit[idx]]
+        },
+        indexDownHistory:  function (idx) {
+            [this.portfolioEdit[idx], this.portfolioEdit[idx + 1]] = [this.portfolioEdit[idx + 1], this.portfolioEdit[idx]]
         },
         deleteHistory: function (idx) {
             this.portfolioEdit.splice(idx, 1)
@@ -676,6 +689,10 @@ const app = {
                 this.drawDrawdownChart(this.portfolio)
                 this.drawAllocationChart(this.assert)
                 this.drawReturnChart(this.portfolio)
+
+                this.toggleCost()
+                this.toggleTW()
+                this.toggleUS()
             })
         },
         refreshData: async function () {
@@ -707,6 +724,10 @@ const app = {
 
             this.refreshTime = new Date(Date.now()).toLocaleString()
             this.refreshing = false
+        },
+        hexToRgba: function (hex, alpha = 1) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${alpha})` : 'rgba(0, u0, 0 ,1)'
         }
     },
     mounted: async function () {

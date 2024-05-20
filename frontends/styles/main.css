@@ -110,6 +110,22 @@ input:focus {
     height: 0.8rem;
 }
 
+.edit-button>i {
+    cursor: pointer;
+}
+
+tbody>tr:first-child>td.edit-button>i.edit-up {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+tbody>tr:last-child>td.edit-button>i.edit-down {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 footer {
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.8rem;
