@@ -22,6 +22,7 @@ const app = {
             costVisual: false,
             editValid: true,
             refreshTime: '-',
+            editModal: undefined,
         }
     },
     methods: {
@@ -626,6 +627,8 @@ const app = {
         showEditModal: function () {
             this.portfolioEdit = JSON.parse(JSON.stringify(this.portfolio))
             this.assertEdit = JSON.parse(JSON.stringify(this.assert))
+
+            this.editModal.show()
         },
         restoreConfig: function () {
             this.editValid = true
@@ -658,6 +661,8 @@ const app = {
             }
 
             axios.post('/config', config).then(async () => {
+                this.editModal.hide()
+
                 await this.refreshData()
 
                 this.growthChart().destroy()
@@ -715,6 +720,8 @@ const app = {
         this.toggleCost()
         this.toggleTW()
         this.toggleUS()
+
+        this.editModal = new bootstrap.Modal('#edit-modal')
 
         setInterval(() => {
             this.refreshData()

@@ -55,7 +55,7 @@
                                 <a class="nav-link" href="#rule">Rule</a>
                             </li>
                             <li class="nav-item">
-                                <button type="button" class="nav-link" @click="showEditModal" data-bs-toggle="modal" data-bs-target="#edit-modal">
+                                <button type="button" class="nav-link" @click="showEditModal">
                                     <i class="fa-solid fa-pen"></i>
                                     Edit
                                 </button>
@@ -405,7 +405,7 @@
                                         <tr v-for="record, idx in portfolioEdit">
                                             <th scope="row">#{{idx + 1}}</th>
                                             <td class="text-nowrap">
-                                                <input type="month" class="form-control w-auto" v-model="record.date" @change="formatMonth" :class="record.date || editValid ? '' : 'is-invalid'">
+                                                <input type="month" class="form-control w-auto" v-model="record.date" :class="record.date || editValid ? '' : 'is-invalid'">
                                             </td>
                                             <td class="text-nowrap">
                                                 <input type="number" class="form-control w-auto" v-model="record.us.cost" :class="record.us.cost || editValid ? '' : 'is-invalid'">
@@ -427,7 +427,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-login float-end" @click="uploadConfig" data-bs-dismiss="modal" aria-label="Close">Save changes</button>
+                    <button type="button" class="btn btn-login float-end" @click="uploadConfig">Save changes</button>
                 </div>
             </div>
         </div>
