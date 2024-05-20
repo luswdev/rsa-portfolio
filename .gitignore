@@ -1,0 +1,11 @@
+*env/
+
+**/__pycache__/
+**/*.egg-info/
+
+**/dist/
+**/build/
+
+**/flask_session/
+
+*.json
