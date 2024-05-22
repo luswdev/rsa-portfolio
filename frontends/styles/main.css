@@ -12,6 +12,10 @@ main {
     margin-top: 5.375rem;
 }
 
+.chart-container {
+    min-height: 450px;
+}
+
 tbody>tr:last-child>td,
 tbody>tr:last-child>th {
     border-bottom-width: 0px !important;
