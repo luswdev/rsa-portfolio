@@ -18,6 +18,7 @@ const app = {
             totalGainLoss: 0,
             lastGain: 0,
             lastChange: 0,
+            lastChangeUpdated: false,
             twdusd: 0,
             usVisual: false,
             twVisual: false,
@@ -700,23 +701,29 @@ const app = {
             this.refreshing = true
             this.twdusd = await this.getCurrency('TWD')
 
-            this.totalCost = 0
-            this.totalGain = 0
-            this.lastChange = 0
+            let totalCost = 0
+            let totalGain = 0
+            let lastChange = 0
             for (let element of this.assert) {
+                element.updated = true
                 element.current = await this.getStock(element.ticker)
                 element.last = await this.getLastChange(element.ticker)
 
                 if (isNaN(parseInt(element.ticker))) {
-                    this.totalCost += element.cost * this.twdusd
-                    this.totalGain += element.current * element.quantity * this.twdusd
-                    this.lastChange += (element.current - element.last) * element.quantity * this.twdusd
+                    totalCost += element.cost * this.twdusd
+                    totalGain += element.current * element.quantity * this.twdusd
+                    lastChange += (element.current - element.last) * element.quantity * this.twdusd
                 } else {
-                    this.totalCost += element.cost
-                    this.totalGain += element.current * element.quantity
-                    this.lastChange += (element.current - element.last) * element.quantity
+                    totalCost += element.cost
+                    totalGain += element.current * element.quantity
+                    lastChange += (element.current - element.last) * element.quantity
                 }
             }
+
+            this.lastChangeUpdated = true
+            this.totalGain = totalGain
+            this.totalCost = totalCost
+            this.lastChange = lastChange
 
             this.totalReturn = this.fixNum((this.totalGain - this.totalCost) / this.totalCost * 100)
             this.totalGainLoss = this.totalGain - this.totalCost
@@ -726,6 +733,13 @@ const app = {
 
             this.refreshTime = new Date(Date.now()).toLocaleString()
             this.refreshing = false
+
+            setTimeout(() => {
+                this.lastChangeUpdated = false
+                this.assert.forEach((el) => {
+                    el.updated = false
+                })
+            }, 5000)
         },
         hexToRgba: function (hex, alpha = 1) {
             var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);

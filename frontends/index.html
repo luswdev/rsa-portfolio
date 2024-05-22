@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap">
-    <link rel="stylesheet" href="/styles/main.css?202405201654">
+    <link rel="stylesheet" href="/styles/main.css?202405222306">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/7205443a15.js" crossorigin="anonymous"></script>
@@ -126,10 +126,14 @@
                                             <td>{{record.ticker}}</td>
                                             <td>{{record.name}}</td>
                                             <td v-if="isNaN(parseInt(record.ticker))" :class="record.current > record.last ? 'text-success' : record.current < record.last ? 'text-danger' : ''">
-                                                {{fixNum(record.current).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}}
+                                                <span :class="record.updated ? 'refresh-block' : ''">
+                                                    {{fixNum(record.current).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}}
+                                                </span>
                                             </td>
                                             <td v-else :class="record.current > record.last ? 'text-success' : record.current < record.last? 'text-danger' : ''">
-                                                {{fixNum(record.current).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}
+                                                <span :class="record.updated ? 'refresh-block' : ''">
+                                                    {{fixNum(record.current).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}
+                                                </span>
                                             </td>
                                             <td>{{fixNum(record.quantity)}}</td>
                                             <td v-if="isNaN(parseInt(record.ticker))" >
@@ -170,7 +174,7 @@
                                 <div v-if="refreshing" class="spinner-border" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>&nbsp;&nbsp;
-                                last update at {{refreshTime}}&nbsp;&nbsp;
+                                last updated at {{refreshTime}}&nbsp;&nbsp;
                                 <i class="fa-solid fa-arrows-rotate" :class="refreshing ? 'refreshing' : 'refresh-done'" @click="refreshData"></i>
                             </span>
                         </div>
@@ -191,7 +195,7 @@
                         <i v-if="lastChange > 0"   class="fa-solid fa-caret-up fs-3 pe-2"></i>
                         <i v-if="lastChange === 0" class="fa-solid fa-minus fs-3 pe-2"></i>
                         <i v-if="lastChange < 0"   class="fa-solid fa-caret-down fs-3 pe-2"></i>
-                        <span class="fs-1">{{Math.abs(fixNum(lastChange)).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}</span>
+                        <span class="fs-1" :class="lastChangeUpdated ? 'refresh-block' : ''">{{Math.abs(fixNum(lastChange)).toLocaleString('en-US', { style: 'currency', currency: 'TWD' })}}</span>
                         <span class="ps-2">({{fixNum(Math.abs((lastChange / totalCost) * 100))}}%)</span>
                     </p>
                     <div class="row">
@@ -447,6 +451,6 @@
     </div>
 
     <script src="/scripts/rule.js?202405201603"></script>
-    <script src="/scripts/main.js?202405201654"></script>
+    <script src="/scripts/main.js?202405222306"></script>
 </body>
 </html>
