@@ -8,6 +8,11 @@
     font-family: "Rubik", "Noto Sans TC", sans-serif;
 }
 
+.navbar {
+    backdrop-filter: blur(0.75rem);
+    -webkit-backdrop-filter: blur(0.75rem);
+}
+
 main {
     margin-top: 5.375rem;
 }
